@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Request
 
-from backend.recommendation import create_recommendations
-from backend.schemas import PredictionResponse, StudentPerformanceRequest
+from recommendation import create_recommendations
+from schemas import PredictionResponse, StudentPerformanceRequest
 
 router = APIRouter()
 
@@ -22,24 +22,30 @@ def determine_performance_level(score: float) -> str:
     summary="Predict student performance using the ScholarSense AI model",
 )
 def predict_student_performance(
-    request: Request, payload: StudentPerformanceRequest
+    request: Request,
+    payload: StudentPerformanceRequest,
 ) -> PredictionResponse:
+
     model = request.app.state.model
+
     if model is None:
-        raise HTTPException(status_code=503, detail="Model is not loaded.")
+        raise HTTPException(
+            status_code=503,
+            detail="Model is not loaded."
+        )
 
     try:
         prediction = model.predict(
-            [
-                [
-                    payload.hours_studied,
-                    payload.sleep_hours,
-                    payload.attendance_percent,
-                    payload.previous_scores,
-                ]
-            ]
+            [[
+                payload.hours_studied,
+                payload.sleep_hours,
+                payload.attendance_percent,
+                payload.previous_scores,
+            ]]
         )
+
         predicted_score = round(float(prediction[0]), 2)
+
     except Exception as error:
         raise HTTPException(
             status_code=500,

@@ -1,6 +1,6 @@
 from typing import List
 
-from backend.schemas import StudentPerformanceRequest
+from schemas import StudentPerformanceRequest
 
 
 def create_recommendations(data: StudentPerformanceRequest) -> List[str]:
@@ -16,9 +16,13 @@ def create_recommendations(data: StudentPerformanceRequest) -> List[str]:
         recommendations.append("Improve attendance.")
 
     if data.previous_scores < 68:
-        recommendations.append("Revise core concepts and practice more questions.")
+        recommendations.append(
+            "Revise core concepts and practice more questions."
+        )
 
     if not recommendations:
-        recommendations.append("Excellent academic habits. Keep maintaining your current routine.")
+        recommendations.append(
+            "Excellent academic habits. Keep maintaining your current routine."
+        )
 
     return recommendations
